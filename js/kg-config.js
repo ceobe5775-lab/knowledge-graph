@@ -20,7 +20,7 @@ const KGConfig = {
             event: { background: '#ef4444', border: '#dc2626' },      // 事件：红色
             person: { background: '#f59e0b', border: '#d97706' },      // 人物：橙色
             location: { background: '#10b981', border: '#059669' },   // 地点：绿色
-            time: { background: '#3b82f6', border: '#2563eb' }        // 时间：蓝色
+            time: { background: '#8D6E63', border: '#6D4C41' }        // 时间：棕色
         },
         
         // 边框宽度（基于实际提取的值）
@@ -145,4 +145,3 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
     window.KGConfig = KGConfig;
 }
-

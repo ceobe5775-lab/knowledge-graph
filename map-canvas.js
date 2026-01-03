@@ -32,11 +32,11 @@ const WANBEI_CITIES = [
 
 // 颜色配置（根据事件数量范围）- 5个层级
 const COLOR_RANGES = [
-    { min: 100, color: '#FFD700', label: '100件以上' },      // 黄色
-    { min: 75, max: 100, color: '#FFA500', label: '75-100件' }, // 橙色
-    { min: 50, max: 75, color: '#FF6347', label: '50-75件' },   // 红橙色
-    { min: 25, max: 50, color: '#9370DB', label: '25-50件' },   // 紫色
-    { min: 0, max: 25, color: '#87CEEB', label: '25件以下' }    // 天蓝色
+    { min: 100, color: '#D4AF37', label: '100件以上' },      // 金色
+    { min: 75, max: 100, color: '#C68642', label: '75-100件' }, // 铜棕色
+    { min: 50, max: 75, color: '#B5651D', label: '50-75件' },   // 深棕色
+    { min: 25, max: 50, color: '#A1866F', label: '25-50件' },   // 暖灰棕
+    { min: 0, max: 25, color: '#E6D1B3', label: '25件以下' }    // 浅米色
 ];
 
 // 初始化Canvas
@@ -1322,7 +1322,7 @@ function showRegionTooltip(x, y, region) {
     
     tooltip.innerHTML = `
         <div style="font-weight: bold; margin-bottom: 5px;">${stats.fullName || region._cityKey}</div>
-        <div style="font-size: 14px; color: #2563eb;">事件数量: ${stats.count}件</div>
+        <div style="font-size: 14px; color: #6D4C41;">事件数量: ${stats.count}件</div>
         ${stats.count > 0 ? `<div style="font-size: 12px; color: #666; margin-top: 5px;">点击查看详情</div>` : ''}
     `;
     

@@ -15,7 +15,7 @@
     /* 强调色 */
     --accent-red: #8B4513;      /* 深红色 - 重要事件标记 */
     --accent-gold: #D4AF37;     /* 金色 - 重要人物/地点 */
-    --accent-blue: #2C3E50;     /* 深蓝色 - 时间线/数据统计 */
+    --accent-blue: #6D4C41;     /* 深棕色 - 时间线/数据统计 */
     
     /* 背景色 - 米白色（历史文献纸张） */
     --bg-paper: #FAF9F6;        /* 纸张色 */
@@ -702,7 +702,7 @@ section {
 
 /* 项目演示 - 数据概览 */
 .demo-overview {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #8D6E63 0%, #5D4037 100%);
     color: white;
     padding: 80px 0;
 }
@@ -933,7 +933,7 @@ section {
 
 /* 地图预览 */
 .map-preview {
-    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+    background: linear-gradient(135deg, #f3e7d3 0%, #e6cfb2 100%);
 }
 
 .map-markers {
@@ -1004,7 +1004,7 @@ section {
 
 /* 搜索预览 */
 .search-preview {
-    background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+    background: linear-gradient(135deg, #f5e9db 0%, #ead7c1 100%);
 }
 
 .search-box {
@@ -1040,7 +1040,7 @@ section {
 
 /* 上传预览 */
 .upload-preview {
-    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    background: linear-gradient(135deg, #f2dfcc 0%, #e2c6a6 100%);
 }
 
 .upload-area {
@@ -1068,7 +1068,7 @@ section {
 
 /* 关系预览 */
 .relation-preview {
-    background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+    background: linear-gradient(135deg, #f7e1d2 0%, #e8c3a6 100%);
 }
 
 .relation-network {
@@ -1223,7 +1223,7 @@ section {
 .timeline-group-header {
     margin: 3rem 0 2rem 0;
     padding: 1.5rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #8D6E63 0%, #5D4037 100%);
     border-radius: 12px;
     color: white;
     display: flex;

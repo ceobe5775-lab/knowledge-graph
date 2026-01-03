@@ -575,7 +575,7 @@
 .map-placeholder {
     width: 100%;
     height: 600px;
-    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+    background: linear-gradient(135deg, #f3e7d3 0%, #e6cfb2 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -995,7 +995,7 @@
 }
 
 .time-color {
-    background: #3b82f6;
+    background: #8D6E63;
 }
 
 .graph-tips {
@@ -1087,7 +1087,6 @@
         padding-left: 2rem;
     }
 }
-
 
 
 

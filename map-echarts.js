@@ -20,11 +20,11 @@ const WANBEI_CITIES = [
 
 // 颜色配置 - 5个层级
 const COLOR_RANGES = [
-    { min: 100, color: '#FFD700', label: '100件以上' },
-    { min: 75, max: 100, color: '#FFA500', label: '75-100件' },
-    { min: 50, max: 75, color: '#FF6347', label: '50-75件' },
-    { min: 25, max: 50, color: '#9370DB', label: '25-50件' },
-    { min: 0, max: 25, color: '#87CEEB', label: '25件以下' }
+    { min: 100, color: '#D4AF37', label: '100件以上' },
+    { min: 75, max: 100, color: '#C68642', label: '75-100件' },
+    { min: 50, max: 75, color: '#B5651D', label: '50-75件' },
+    { min: 25, max: 50, color: '#A1866F', label: '25-50件' },
+    { min: 0, max: 25, color: '#E6D1B3', label: '25件以下' }
 ];
 
 // 根据事件数量获取颜色
@@ -275,7 +275,7 @@ function renderEChartsMap() {
             text: ['高', '低'],
             calculable: true,
             inRange: {
-                color: ['#87CEEB', '#9370DB', '#FF69B4', '#FF6347', '#FFA500', '#FFD700']
+                color: ['#E6D1B3', '#C9A46B', '#B5651D', '#C68642', '#D4AF37', '#8B5E3C']
             },
             textStyle: {
                 color: '#333'
@@ -300,7 +300,7 @@ function renderEChartsMap() {
                         fontWeight: 'bold'
                     },
                     itemStyle: {
-                        areaColor: '#ffd700'
+                        areaColor: '#D4AF37'
                     }
                 },
                 data: [
@@ -414,7 +414,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
 
 
 

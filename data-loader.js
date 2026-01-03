@@ -890,7 +890,7 @@ function updateEventSetOverview() {
                 <span>${eventSetData.persons.length} 个人物</span>
                 <span>${eventSetData.locations.length} 个地点</span>
             </div>
-            <a href="events.html?eventSet=${encodeURIComponent(eventSetName)}" class="event-set-link" style="color: #2563eb; text-decoration: none; font-weight: 500;">查看详情 →</a>
+            <a href="events.html?eventSet=${encodeURIComponent(eventSetName)}" class="event-set-link" style="color: #6D4C41; text-decoration: none; font-weight: 500;">查看详情 →</a>
         `;
         
         card.addEventListener('mouseenter', () => {

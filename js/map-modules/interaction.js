@@ -124,7 +124,7 @@ function showRegionTooltip(x, y, region) {
     
     tooltip.innerHTML = `
         <div style="font-weight: bold; margin-bottom: 5px;">${stats.fullName || region._cityKey}</div>
-        <div style="font-size: 14px; color: #2563eb;">事件数量: ${stats.count}件</div>
+        <div style="font-size: 14px; color: #6D4C41;">事件数量: ${stats.count}件</div>
         ${stats.count > 0 ? `<div style="font-size: 12px; color: #666; margin-top: 5px;">点击查看详情</div>` : ''}
     `;
     

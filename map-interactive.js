@@ -152,9 +152,9 @@ async function initMap() {
     if (wanbeiBoundary) {
         L.geoJSON(wanbeiBoundary, {
             style: {
-                color: '#2563eb',
+                color: '#6D4C41',
                 weight: 2.5,
-                fillColor: '#3b82f6',
+                fillColor: '#8D6E63',
                 fillOpacity: 0.08
             }
         }).addTo(map).bindPopup('皖北地区');
@@ -174,7 +174,7 @@ async function initMap() {
                 
                 if (isCity) {
                     lineWeight = 2.5; // 市线条更粗
-                    lineColor = '#2563eb';
+                    lineColor = '#6D4C41';
                 } else if (isCounty) {
                     lineWeight = 1.0; // 县线条更细
                     lineColor = '#10b981';
@@ -184,7 +184,7 @@ async function initMap() {
                     style: {
                         color: lineColor,
                         weight: lineWeight,
-                        fillColor: isCity ? '#2563eb' : '#10b981',
+                        fillColor: isCity ? '#6D4C41' : '#10b981',
                         fillOpacity: isCity ? 0.06 : 0.04
                     }
                 }).addTo(map).bindPopup(`${name}${isCounty ? '县' : '市'}`);
@@ -287,7 +287,7 @@ function displayNodes(nodes) {
         const name = node.properties.name || node.properties.名称 || '未知';
         
         // 确定节点类型和颜色
-        let color = '#3b82f6'; // 默认蓝色
+        let color = '#8D6E63'; // 默认棕色
         let icon = '📍';
         
         if (node.labels && node.labels.some(l => l.includes('事件'))) {

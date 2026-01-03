@@ -110,7 +110,7 @@
 }
 
 #apply-filters {
-    background: #2563eb;
+    background: #6D4C41;
     color: white;
 }
 
@@ -197,4 +197,3 @@
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
 }
-

@@ -43,8 +43,8 @@ function _drawMapImpl() {
         canvas.width / 2, canvas.height / 2, 0,
         canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height)
     );
-    gradient.addColorStop(0, '#f0f8ff');
-    gradient.addColorStop(1, '#e6f3ff');
+    gradient.addColorStop(0, '#f7efe3');
+    gradient.addColorStop(1, '#f0e0cc');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
@@ -440,4 +440,3 @@ function drawEvents() {
         console.log(`drawEvents: 绘制了${drawnCount}个事件节点，跳过了${skippedCount}个无坐标事件`);
     }
 }
-
