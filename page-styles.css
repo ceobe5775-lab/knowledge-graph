@@ -7,7 +7,7 @@
 .page-header {
     /* 默认背景（用于向后兼容） */
     background: 
-        url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1920&q=80&auto=format&fit=crop') center/cover no-repeat,
+        url('images/header-index.png') center/cover no-repeat,
         linear-gradient(135deg, 
             rgba(62, 39, 35, 0.85) 0%, 
             rgba(93, 64, 55, 0.8) 50%,
@@ -35,7 +35,7 @@
 /* 数据概览页面 - 统计图表/数据表格主题 */
 .page-header-overview {
     background: 
-        url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1920&q=80&auto=format&fit=crop') center/cover no-repeat,
+        url('images/header-overview.png') center/cover no-repeat,
         linear-gradient(135deg, 
             rgba(62, 39, 35, 0.85) 0%, 
             rgba(93, 64, 55, 0.8) 50%,
@@ -58,7 +58,7 @@
 /* 历史事件页面 - 时间轴/历史文档主题 */
 .page-header-events {
     background: 
-        url('https://images.unsplash.com/photo-1509021436665-8f1d3145574d?w=1920&q=80&auto=format&fit=crop') center/cover no-repeat,
+        url('images/header-events.png') center/cover no-repeat,
         linear-gradient(135deg, 
             rgba(62, 39, 35, 0.85) 0%, 
             rgba(93, 64, 55, 0.8) 50%,
@@ -81,7 +81,7 @@
 /* 地理地图页面 - 地图/地理主题 */
 .page-header-map {
     background: 
-        url('https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1920&q=80&auto=format&fit=crop') center/cover no-repeat,
+        url('images/header-map-interactive.png') center/cover no-repeat,
         linear-gradient(135deg, 
             rgba(62, 39, 35, 0.85) 0%, 
             rgba(93, 64, 55, 0.8) 50%,
@@ -104,7 +104,7 @@
 /* 事件分布页面 - 热力图/分布图主题 */
 .page-header-distribution {
     background: 
-        url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1920&q=80&auto=format&fit=crop') center/cover no-repeat,
+        url('images/header-distribution.png') center/cover no-repeat,
         linear-gradient(135deg, 
             rgba(62, 39, 35, 0.85) 0%, 
             rgba(93, 64, 55, 0.8) 50%,
@@ -127,7 +127,7 @@
 /* 人物名片页面 - 人物肖像/历史人物主题 */
 .page-header-persons {
     background: 
-        url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1920&q=80&auto=format&fit=crop') center/cover no-repeat,
+        url('images/header-persons.png') center/cover no-repeat,
         linear-gradient(135deg, 
             rgba(62, 39, 35, 0.85) 0%, 
             rgba(93, 64, 55, 0.8) 50%,
@@ -150,7 +150,7 @@
 /* 知识图谱页面 - 网络图/关联关系主题 */
 .page-header-knowledge {
     background: 
-        url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1920&q=80&auto=format&fit=crop') center/cover no-repeat,
+        url('images/header-knowledge.png') center/cover no-repeat,
         linear-gradient(135deg, 
             rgba(62, 39, 35, 0.85) 0%, 
             rgba(93, 64, 55, 0.8) 50%,
