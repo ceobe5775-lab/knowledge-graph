@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人物详情 - 皖北军事环境成因知识图谱平台</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="page-styles.css">
+    <style>
+        .person-detail-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .person-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .person-name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .person-role {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .person-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .detail-section {
+            margin-bottom: 2rem;
+        }
+        .detail-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        .detail-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+        .detail-value {
+            color: #1f2937;
+            line-height: 1.6;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="logo-icon">🗺️</span>
+                <span class="logo-text">皖北军事环境成因<br>知识图谱平台</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">首页</a></li>
+                <li><a href="overview.html" class="nav-link">数据概览</a></li>
+                <li><a href="events.html" class="nav-link">历史事件</a></li>
+                <li><a href="map-interactive.html" class="nav-link">地理地图</a></li>
+                <li><a href="map-canvas.html" class="nav-link">事件分布</a></li>
+                <li><a href="persons.html" class="nav-link active">人物名片</a></li>
+                <li><a href="knowledgeGraph.html" class="nav-link">知识图谱</a></li>
+                <li><a href="http://localhost:3000" target="_blank" class="nav-link">实际系统</a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <div class="page-content">
+            <div class="person-detail-container">
+                <a href="persons.html" class="back-link">← 返回人物列表</a>
+                <div id="person-detail-content">
+                    <div style="text-align: center; padding: 3rem;">
+                        <p>加载中...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="data-loader.js"></script>
+    <script>
+        async function loadPersonDetail() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const personId = urlParams.get('id');
+            
+            if (!personId) {
+                document.getElementById('person-detail-content').innerHTML = '<p>未指定人物ID</p>';
+                return;
+            }
+            
+            try {
+                // 等待 data-loader.js 加载完成
+                let data = null;
+                let persons = [];
+                
+                // 方法1: 尝试使用 data-loader.js 已加载的数据
+                if (typeof window.normalizedData !== 'undefined' && window.normalizedData && window.normalizedData.persons) {
+                    persons = window.normalizedData.persons;
+                } else {
+                    // 方法2: 直接加载 data.json
+                    const response = await fetch('data.json');
+                    data = await response.json();
+                    
+                    // data.json 的结构是 { combined: { nodes: [], events: [], persons: [] }, summary: {} }
+                    if (data && data.combined) {
+                        persons = data.combined.persons || [];
+                    } else if (data && data.nodes) {
+                        // 兼容旧格式
+                        persons = data.nodes.filter(n => 
+                            n.labels && n.labels.some(l => l.includes('人物'))
+                        );
+                    }
+                }
+                
+                if (!persons || persons.length === 0) {
+                    document.getElementById('person-detail-content').innerHTML = '<p>数据加载失败：未找到人物数据</p>';
+                    return;
+                }
+                
+                // 查找人物节点（支持多种ID格式）
+                const person = persons.find(n => {
+                    const id = n.id;
+                    return id === personId || 
+                           id === parseInt(personId) || 
+                           id === String(personId) ||
+                           String(id) === String(personId);
+                });
+                
+                if (!person) {
+                    document.getElementById('person-detail-content').innerHTML = `
+                        <p>未找到该人物 (ID: ${personId})</p>
+                        <p>可用人物数量: ${persons.length}</p>
+                        <p>前5个ID示例: ${persons.slice(0, 5).map(p => p.id).join(', ')}</p>
+                    `;
+                    return;
+                }
+                
+                const props = person.properties || {};
+                const name = props.姓名 || props.name || '未知人物';
+                const role = props.身份 || props.角色 || props.类型 || '历史人物';
+                const desc = props.描述 || props.description || '';
+                
+                const html = `
+                    <div class="person-header">
+                        <div class="person-name">${name}</div>
+                        <div class="person-role">${role}</div>
+                    </div>
+                    <div class="person-content">
+                        ${desc ? `
+                            <div class="detail-section">
+                                <h3>人物简介</h3>
+                                <div class="detail-item">
+                                    <div class="detail-value">${desc}</div>
+                                </div>
+                            </div>
+                        ` : ''}
+                        <div class="detail-section">
+                            <h3>详细信息</h3>
+                            ${Object.entries(props).map(([key, value]) => {
+                                if (key === '描述' || key === 'description') return '';
+                                if (typeof value === 'object') return '';
+                                return `
+                                    <div class="detail-item">
+                                        <div class="detail-label">${key}</div>
+                                        <div class="detail-value">${value}</div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('person-detail-content').innerHTML = html;
+            } catch (error) {
+                console.error('加载人物详情失败:', error);
+                document.getElementById('person-detail-content').innerHTML = '<p>加载失败，请刷新页面重试</p>';
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadPersonDetail);
+    </script>
+</body>
+</html>
+
