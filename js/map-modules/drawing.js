@@ -38,14 +38,8 @@ function _drawMapImpl() {
     // 清空画布
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // 绘制背景（渐变效果）
-    const gradient = ctx.createRadialGradient(
-        canvas.width / 2, canvas.height / 2, 0,
-        canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height)
-    );
-    gradient.addColorStop(0, '#f0f8ff');
-    gradient.addColorStop(1, '#e6f3ff');
-    ctx.fillStyle = gradient;
+    // 绘制背景（白色）
+    ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     // 绘制区域（带颜色填充）- 只在详细视图时填充
@@ -190,7 +184,7 @@ function drawBoundaries() {
         // 详细视图：填充县/镇区域
         if (currentCity && !isOutline) {
             const coords = feature.geometry.coordinates;
-            ctx.fillStyle = fillColor + '60'; // 60 = 37.5%透明度
+            ctx.fillStyle = fillColor + 'CC'; // CC = 80%不透明度，颜色更接近图例
             ctx.beginPath();
             
             if (feature.geometry.type === 'Polygon') {
