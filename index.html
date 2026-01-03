@@ -4,13 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>知识图谱 - 皖北军事环境成因知识图谱平台</title>
-    <meta http-equiv="refresh" content="0; url=knowledgeGraph.html">
-    <script>
-        // 立即跳转到知识图谱页面
-        window.location.href = 'knowledgeGraph.html';
-    </script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="page-styles.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .home-container {
+            text-align: center;
+            color: white;
+            padding: 40px;
+            max-width: 600px;
+        }
+        .home-title {
+            font-size: 3em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .home-subtitle {
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        .home-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .home-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+    </style>
 </head>
 <body>
-    <p>正在跳转到知识图谱页面...如果页面没有自动跳转，请 <a href="knowledgeGraph.html">点击这里</a>。</p>
+    <div class="home-container">
+        <h1 class="home-title">🗺️ 知识图谱</h1>
+        <p class="home-subtitle">皖北军事环境成因知识图谱可视化平台</p>
+        <a href="knowledgeGraph.html" class="home-button">进入知识图谱</a>
+    </div>
 </body>
 </html>
