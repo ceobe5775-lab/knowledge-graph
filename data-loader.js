@@ -1217,16 +1217,16 @@ function createTimelineItem(event) {
     
     const item = document.createElement('div');
     item.className = 'timeline-item';
+    
+    // 如果有描述，显示描述；如果没有描述，不显示 timeline-detail 段落
+    const detailHTML = eventDesc ? `<p class="timeline-detail">${eventDesc}</p>` : '';
+    
     item.innerHTML = `
-        <div class="timeline-year">${eventTime || '历史事件'}</div>
+        <div class="timeline-year">${eventTime || ''}</div>
         <div class="timeline-content">
             <h3>${eventName}</h3>
-            <p>${eventDesc || (lat && lng ? `坐标: ${lat}, ${lng}` : '') || '暂无描述'}</p>
-            <div class="timeline-tags">
-                <span class="tag">事件</span>
-                ${props.data_source ? `<span class="tag">${props.data_source.split('_')[0]}</span>` : ''}
-            </div>
-            <a href="eventDetail.html?id=${event.id}" class="timeline-link">查看详情 →</a>
+            ${detailHTML}
+            <a href="eventDetail.html?id=${event.id}" class="timeline-link">查看详情</a>
         </div>
     `;
     return item;
