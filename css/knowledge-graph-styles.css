@@ -51,13 +51,13 @@
 
 .filter-select-item:hover,
 .filter-select-type:hover {
-    border-color: #2563eb;
+    border-color: #6D4C41;
 }
 
 .filter-select-item:focus,
 .filter-select-type:focus {
     outline: none;
-    border-color: #2563eb;
+    border-color: #6D4C41;
     box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
 }
 
