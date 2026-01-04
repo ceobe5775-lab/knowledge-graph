@@ -1320,19 +1320,51 @@ const updateAllEventsPage = rafThrottle(function() {
     
     console.log('updateAllEventsPage: 准备渲染全部', events.length, '个事件');
     
-    // 按时间排序
-    events.sort((a, b) => {
-        const timeA = parseEventTime(a.properties?.发生时间 || a.properties?.时间 || '');
-        const timeB = parseEventTime(b.properties?.发生时间 || b.properties?.时间 || '');
-        return timeA.sortKey - timeB.sortKey;
+    // 为每个事件计算排序键（基于时间段）
+    const periodOrder = ['先秦', '秦汉', '汉', '魏晋南北朝', '隋唐', '宋元', '明', '清', '民国', '现代', '未知'];
+    const eventsWithSortKey = events.map(event => {
+        const props = event.properties || {};
+        const eventName = props.名称 || props.name || '';
+        const timeStr = props.发生时间 || props.时间 || '';
+        const timeInfo = parseEventTime(timeStr);
+        
+        // 如果时间字段为空，从事件名称推断时间段
+        let period;
+        if (timeInfo.year !== 0) {
+            period = getTimePeriod(timeInfo.year);
+        } else {
+            period = inferTimePeriodFromName(eventName);
+        }
+        
+        // 使用时间段顺序作为主要排序键，年份作为次要排序键
+        const periodIndex = periodOrder.indexOf(period);
+        const sortKey = periodIndex * 10000 + (timeInfo.year || 0);
+        
+        return {
+            event: event,
+            sortKey: sortKey,
+            period: period,
+            year: timeInfo.year
+        };
     });
-    
-    console.log('updateAllEventsPage: 已按时间排序，显示所有', events.length, '个事件');
+
+    // 按时间段和年份排序
+    eventsWithSortKey.sort((a, b) => {
+        if (a.sortKey !== b.sortKey) {
+            return a.sortKey - b.sortKey;
+        }
+        // 如果时间段相同，按事件名称排序（作为最后的排序依据）
+        const nameA = a.event.properties?.名称 || a.event.properties?.name || '';
+        const nameB = b.event.properties?.名称 || b.event.properties?.name || '';
+        return nameA.localeCompare(nameB, 'zh-CN');
+    });
+
+    console.log('updateAllEventsPage: 已按时间排序，显示所有', eventsWithSortKey.length, '个事件');
     
     // 显示所有事件
-    events.forEach(event => {
-        const item = createTimelineItem(event);
-        timelineContainer.appendChild(item);
+    eventsWithSortKey.forEach(item => {
+        const timelineItem = createTimelineItem(item.event);
+        timelineContainer.appendChild(timelineItem);
     });
 });
 
