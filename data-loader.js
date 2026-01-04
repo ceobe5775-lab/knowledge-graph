@@ -1133,7 +1133,82 @@ function resetFilters() {
     }
 }
 
-// 更新事件页面（使用分类数据 + 性能优化）
+// 判断事件是否重要
+function isImportantEvent(event) {
+    const props = event.properties || {};
+    const eventName = props.名称 || props.name || props.事件名称 || '';
+    const eventDesc = props.描述 || props.description || '';
+    
+    // 重要性评分
+    let score = 0;
+    
+    // 1. 有详细描述的事件（描述长度 > 30字符）
+    if (eventDesc && eventDesc.length > 30) {
+        score += 3;
+    } else if (eventDesc && eventDesc.length > 20) {
+        score += 2;
+    } else if (eventDesc) {
+        score += 1;
+    }
+    
+    // 2. 事件名称包含重要关键词
+    const importantKeywords = [
+        '战役', '决战', '会战', '大捷', '歼灭', '合围',
+        '起义', '解放', '攻占', '围攻', '收复', '光复',
+        '大战', '决战', '围困', '突围', '突围战'
+    ];
+    for (const keyword of importantKeywords) {
+        if (eventName.includes(keyword)) {
+            score += 2;
+            break;
+        }
+    }
+    
+    // 3. 事件名称包含重要历史人物或地点（重要战役通常有明确的地名或人名）
+    const importantPatterns = [
+        /(淮海|徐州|宿州|亳州|阜阳|颍州|蚌埠).*(战役|会战|战斗)/,
+        /(项羽|刘邦|韩信|张乐行|李自成|黄巢|捻军).*/,
+        /(解放|光复|收复).*(城|县|州)/
+    ];
+    for (const pattern of importantPatterns) {
+        if (pattern.test(eventName)) {
+            score += 1;
+            break;
+        }
+    }
+    
+    // 重要事件阈值：得分 >= 3
+    return score >= 3;
+}
+
+// 解析时间字符串，提取年份用于排序
+function parseEventTime(timeStr) {
+    if (!timeStr) return { year: 0, sortKey: 0 };
+    
+    // 匹配各种时间格式：公元前495年、公元467年、1938年6月、1949年1月20日等
+    const patterns = [
+        /公元前\s*(\d+)/,  // 公元前495年
+        /公元\s*(\d+)/,    // 公元467年
+        /(\d{4})\s*年/,    // 1938年
+        /(\d{4})/          // 1938
+    ];
+    
+    for (const pattern of patterns) {
+        const match = timeStr.match(pattern);
+        if (match) {
+            let year = parseInt(match[1]);
+            // 如果是公元前，年份取负值
+            if (timeStr.includes('公元前') || timeStr.includes('前')) {
+                year = -year;
+            }
+            return { year: year, sortKey: year };
+        }
+    }
+    
+    return { year: 0, sortKey: 0 };
+}
+
+// 更新事件页面（使用分类数据 + 性能优化 + 重要性筛选）
 const updateEventsPage = rafThrottle(function() {
     const data = getCurrentData();
     if (!data) {
@@ -1173,36 +1248,33 @@ const updateEventsPage = rafThrottle(function() {
     
     console.log('updateEventsPage: 准备渲染', events.length, '个事件');
     
-    // 如果有分类数据，按事件集分组显示
-    if (categorizedData && categorizedData.byEventSet && Object.keys(categorizedData.byEventSet).length > 0) {
-        const eventSetNames = Object.keys(categorizedData.byEventSet);
-        console.log('updateEventsPage: 按事件集分组显示', eventSetNames.length, '个事件集');
-        
-        eventSetNames.forEach(eventSetName => {
-            const eventSetData = categorizedData.byEventSet[eventSetName];
-            
-            // 创建事件集分组标题
-            const groupHeader = document.createElement('div');
-            groupHeader.className = 'timeline-group-header';
-            groupHeader.innerHTML = `
-                <h3 class="event-set-title">${eventSetName}</h3>
-                <span class="event-count">${eventSetData.events.length} 个事件</span>
-            `;
-            timelineContainer.appendChild(groupHeader);
-            
-            // 添加该事件集的事件（限制数量，避免一次性渲染太多）
-            eventSetData.events.slice(0, 10).forEach(event => {
-                const item = createTimelineItem(event);
-                timelineContainer.appendChild(item);
-            });
-        });
-    } else {
-        // 降级：直接显示所有事件（限制数量）
-        console.log('updateEventsPage: 降级显示所有事件');
-        events.slice(0, 50).forEach(event => {
-            const item = createTimelineItem(event);
-            timelineContainer.appendChild(item);
-        });
+    // 筛选重要事件
+    const importantEvents = events.filter(event => isImportantEvent(event));
+    console.log('updateEventsPage: 筛选出', importantEvents.length, '个重要事件');
+    
+    // 按时间排序
+    importantEvents.sort((a, b) => {
+        const timeA = parseEventTime(a.properties?.发生时间 || a.properties?.时间 || '');
+        const timeB = parseEventTime(b.properties?.发生时间 || b.properties?.时间 || '');
+        return timeA.sortKey - timeB.sortKey;
+    });
+    
+    console.log('updateEventsPage: 已按时间排序，显示前', Math.min(importantEvents.length, 100), '个重要事件');
+    
+    // 显示重要事件（限制数量，避免一次性渲染太多）
+    const displayCount = Math.min(100, importantEvents.length);
+    importantEvents.slice(0, displayCount).forEach(event => {
+        const item = createTimelineItem(event);
+        timelineContainer.appendChild(item);
+    });
+    
+    // 如果重要事件数量较少，显示提示
+    if (importantEvents.length < events.length * 0.3) {
+        const infoNote = document.createElement('div');
+        infoNote.className = 'timeline-info-note';
+        infoNote.style.cssText = 'margin-top: 2rem; padding: 1rem; background: rgba(212, 175, 55, 0.1); border-radius: 8px; color: var(--text-secondary); text-align: center;';
+        infoNote.innerHTML = `已筛选并显示 ${importantEvents.length} 个重要历史事件（共 ${events.length} 个事件）`;
+        timelineContainer.appendChild(infoNote);
     }
 });
 
