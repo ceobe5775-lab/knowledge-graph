@@ -2531,6 +2531,19 @@ async function initDataLoader() {
         isInitialized = true;
         console.log('开始初始化数据加载器...');
         
+        // 检查URL参数，如果包含 clearCache=1，则清除缓存
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('clearCache') === '1') {
+            console.log('检测到 clearCache=1 参数，清除缓存...');
+            await clearIndexedDBCache();
+            // 清除内存缓存
+            dataCache.raw = null;
+            dataCache.normalized = null;
+            dataCache.categorized = null;
+            dataCache.lastUpdate = null;
+            console.log('缓存已清除，将从文件重新加载数据');
+        }
+        
         // 检测页面类型
         const path = window.location.pathname;
         let pageType = 'auto';
