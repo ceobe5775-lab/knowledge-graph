@@ -1208,6 +1208,54 @@ function parseEventTime(timeStr) {
     return { year: 0, sortKey: 0 };
 }
 
+// 更新全部事件页面（显示所有事件，不过滤重要性）
+const updateAllEventsPage = rafThrottle(function() {
+    const data = getCurrentData();
+    if (!data) {
+        console.warn('updateAllEventsPage: 数据未加载');
+        return;
+    }
+    
+    // 优先使用标准化数据
+    let events = [];
+    if (normalizedData && normalizedData.events && normalizedData.events.length > 0) {
+        events = normalizedData.events;
+    } else if (data.combined && data.combined.events && data.combined.events.length > 0) {
+        events = data.combined.events;
+    } else if (data.events && data.events.length > 0) {
+        events = data.events;
+    } else {
+        console.warn('updateAllEventsPage: 未找到事件数据');
+        return;
+    }
+    
+    const timelineContainer = document.querySelector('.timeline-container') || document.querySelector('.timeline-section');
+    if (!timelineContainer) {
+        console.warn('updateAllEventsPage: 未找到时间轴容器');
+        return;
+    }
+    
+    // 清空现有内容
+    timelineContainer.innerHTML = '';
+    
+    console.log('updateAllEventsPage: 准备渲染全部', events.length, '个事件');
+    
+    // 按时间排序
+    events.sort((a, b) => {
+        const timeA = parseEventTime(a.properties?.发生时间 || a.properties?.时间 || '');
+        const timeB = parseEventTime(b.properties?.发生时间 || b.properties?.时间 || '');
+        return timeA.sortKey - timeB.sortKey;
+    });
+    
+    console.log('updateAllEventsPage: 已按时间排序，显示所有', events.length, '个事件');
+    
+    // 显示所有事件
+    events.forEach(event => {
+        const item = createTimelineItem(event);
+        timelineContainer.appendChild(item);
+    });
+});
+
 // 更新事件页面（使用分类数据 + 性能优化 + 重要性筛选）
 const updateEventsPage = rafThrottle(function() {
     const data = getCurrentData();
