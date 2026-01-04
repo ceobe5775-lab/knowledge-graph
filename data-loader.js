@@ -1133,8 +1133,8 @@ function resetFilters() {
     }
 }
 
-// 判断事件是否重要
-function isImportantEvent(event) {
+// 计算事件的重要性得分（用于排序，不用于过滤）
+function getEventImportanceScore(event) {
     const props = event.properties || {};
     const eventName = props.名称 || props.name || props.事件名称 || '';
     const eventDesc = props.描述 || props.description || '';
@@ -1177,8 +1177,21 @@ function isImportantEvent(event) {
         }
     }
     
-    // 重要事件阈值：得分 >= 3
-    return score >= 3;
+    return score;
+}
+
+// 获取时间段标识（用于分组）
+function getTimePeriod(year) {
+    if (year < -221) return '先秦';
+    if (year < 0) return '秦汉';
+    if (year < 220) return '汉';
+    if (year < 581) return '魏晋南北朝';
+    if (year < 907) return '隋唐';
+    if (year < 1279) return '宋元';
+    if (year < 1644) return '明';
+    if (year < 1912) return '清';
+    if (year < 1949) return '民国';
+    return '现代';
 }
 
 // 解析时间字符串，提取年份用于排序
@@ -1296,34 +1309,58 @@ const updateEventsPage = rafThrottle(function() {
     
     console.log('updateEventsPage: 准备渲染', events.length, '个事件');
     
-    // 筛选重要事件
-    const importantEvents = events.filter(event => isImportantEvent(event));
-    console.log('updateEventsPage: 筛选出', importantEvents.length, '个重要事件');
-    
-    // 按时间排序
-    importantEvents.sort((a, b) => {
-        const timeA = parseEventTime(a.properties?.发生时间 || a.properties?.时间 || '');
-        const timeB = parseEventTime(b.properties?.发生时间 || b.properties?.时间 || '');
-        return timeA.sortKey - timeB.sortKey;
+    // 为每个事件计算时间并分组
+    const eventsWithTime = events.map(event => {
+        const timeStr = event.properties?.发生时间 || event.properties?.时间 || '';
+        const timeInfo = parseEventTime(timeStr);
+        const period = getTimePeriod(timeInfo.year);
+        const score = getEventImportanceScore(event);
+        return {
+            event: event,
+            year: timeInfo.year,
+            sortKey: timeInfo.sortKey,
+            period: period,
+            score: score
+        };
     });
     
-    console.log('updateEventsPage: 已按时间排序，显示前', Math.min(importantEvents.length, 100), '个重要事件');
-    
-    // 显示重要事件（限制数量，避免一次性渲染太多）
-    const displayCount = Math.min(100, importantEvents.length);
-    importantEvents.slice(0, displayCount).forEach(event => {
-        const item = createTimelineItem(event);
-        timelineContainer.appendChild(item);
+    // 按时间段分组
+    const periodGroups = {};
+    eventsWithTime.forEach(item => {
+        if (!periodGroups[item.period]) {
+            periodGroups[item.period] = [];
+        }
+        periodGroups[item.period].push(item);
     });
     
-    // 如果重要事件数量较少，显示提示
-    if (importantEvents.length < events.length * 0.3) {
-        const infoNote = document.createElement('div');
-        infoNote.className = 'timeline-info-note';
-        infoNote.style.cssText = 'margin-top: 2rem; padding: 1rem; background: rgba(212, 175, 55, 0.1); border-radius: 8px; color: var(--text-secondary); text-align: center;';
-        infoNote.innerHTML = `已筛选并显示 ${importantEvents.length} 个重要历史事件（共 ${events.length} 个事件）`;
-        timelineContainer.appendChild(infoNote);
-    }
+    // 从每个时间段选择事件：优先选择高分事件，但确保每个时间段都有代表
+    const selectedEvents = [];
+    const maxEventsPerPeriod = Math.ceil(100 / Object.keys(periodGroups).length); // 平均分配，最多100个事件
+    
+    Object.keys(periodGroups).sort((a, b) => {
+        // 按时间顺序排序时间段
+        const periods = ['先秦', '秦汉', '汉', '魏晋南北朝', '隋唐', '宋元', '明', '清', '民国', '现代'];
+        return periods.indexOf(a) - periods.indexOf(b);
+    }).forEach(period => {
+        const periodEvents = periodGroups[period];
+        // 按重要性得分降序排序
+        periodEvents.sort((a, b) => b.score - a.score);
+        // 从每个时间段选择事件（优先高分，但确保至少选一些）
+        const selectCount = Math.min(maxEventsPerPeriod, Math.max(3, Math.ceil(periodEvents.length * 0.3)));
+        selectedEvents.push(...periodEvents.slice(0, selectCount));
+    });
+    
+    console.log('updateEventsPage: 从各时间段筛选出', selectedEvents.length, '个事件');
+    
+    // 按时间排序最终结果
+    selectedEvents.sort((a, b) => a.sortKey - b.sortKey);
+    
+    // 显示事件（限制数量，避免一次性渲染太多）
+    const displayCount = Math.min(100, selectedEvents.length);
+    selectedEvents.slice(0, displayCount).forEach(item => {
+        const timelineItem = createTimelineItem(item.event);
+        timelineContainer.appendChild(timelineItem);
+    });
 });
 
 // 创建时间轴项目
