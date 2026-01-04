@@ -87,9 +87,14 @@ searchInputs.forEach(input => {
     });
 });
 
-// 加载更多按钮
+// 加载更多按钮（仅处理 button 类型的按钮，不处理链接）
 const loadMoreButtons = document.querySelectorAll('.btn-more');
 loadMoreButtons.forEach(btn => {
+    // 如果是链接（<a>标签），跳过处理，让它正常导航
+    if (btn.tagName === 'A' || btn.tagName === 'a') {
+        return;
+    }
+    
     btn.addEventListener('click', () => {
         // 这里可以添加加载更多数据的逻辑
         btn.textContent = '加载中...';
