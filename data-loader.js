@@ -1103,7 +1103,7 @@ function updatePersonsPageWithFilteredData(filteredData) {
                     <span class="tag">人物</span>
                 </div>
             </div>
-            <a href="personDetail.html?id=${person.id}" class="person-link">查看详情 →</a>
+            <a href="personDetail.html?id=${person.id}" class="person-link">查看详情</a>
         `;
         personCards.appendChild(card);
     });
@@ -1538,18 +1538,17 @@ const updatePersonsPage = rafThrottle(function() {
         
         const card = document.createElement('div');
         card.className = 'person-card';
-        card.innerHTML = `
+            card.innerHTML = `
             <div class="person-avatar">${firstChar}</div>
             <div class="person-info">
                 <h3>${personName}</h3>
                 <p class="person-role">${personRole}</p>
-                ${lat && lng ? `<p class="person-desc">坐标: ${lat}, ${lng}</p>` : ''}
                 <div class="person-tags">
                     <span class="tag">人物</span>
                     ${props.data_source ? `<span class="tag">${props.data_source.split('_')[0]}</span>` : ''}
                 </div>
             </div>
-            <a href="personDetail.html?id=${person.id}" class="person-link">查看详情 →</a>
+            <a href="personDetail.html?id=${person.id}" class="person-link">查看详情</a>
         `;
         personCards.appendChild(card);
     });
