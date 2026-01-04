@@ -1260,6 +1260,13 @@ section {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+a.btn-more {
+    text-decoration: none;
+    color: white;
 }
 
 .btn-more:hover {
