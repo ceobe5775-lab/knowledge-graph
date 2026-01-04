@@ -1180,6 +1180,73 @@ function getEventImportanceScore(event) {
     return score;
 }
 
+// 从事件名称推断时间段（当没有时间字段时使用）
+function inferTimePeriodFromName(eventName) {
+    if (!eventName) return '未知';
+    
+    // 现代/当代（1949年后）
+    if (eventName.includes('解放') || eventName.includes('解放军') || 
+        eventName.includes('新四军') || eventName.includes('八路军')) {
+        return '现代';
+    }
+    
+    // 民国/抗战（1912-1949）
+    if (eventName.includes('抗日') || eventName.includes('日军') || 
+        eventName.includes('国民党') || eventName.includes('国军')) {
+        return '民国';
+    }
+    
+    // 清朝（1644-1912）
+    if (eventName.includes('捻军') || eventName.includes('太平军') || 
+        eventName.includes('清军')) {
+        return '清';
+    }
+    
+    // 明朝（1368-1644）
+    if (eventName.includes('明军') || eventName.includes('闯王') || 
+        eventName.includes('李自成')) {
+        return '明';
+    }
+    
+    // 宋元（960-1368）
+    if (eventName.includes('宋') || eventName.includes('元军')) {
+        return '宋元';
+    }
+    
+    // 隋唐（581-907）
+    if (eventName.includes('唐') || eventName.includes('隋')) {
+        return '隋唐';
+    }
+    
+    // 魏晋南北朝（220-581）
+    if (eventName.includes('晋') || eventName.includes('魏') || 
+        eventName.includes('南北朝') || eventName.includes('北朝') || 
+        eventName.includes('南朝')) {
+        return '魏晋南北朝';
+    }
+    
+    // 汉（前202-220）
+    if (eventName.includes('汉') || eventName.includes('刘邦') || 
+        eventName.includes('项羽') || eventName.includes('韩信') ||
+        eventName.includes('楚汉') || eventName.includes('西汉') || 
+        eventName.includes('东汉')) {
+        return '汉';
+    }
+    
+    // 秦汉（前221-前202）
+    if (eventName.includes('秦') || eventName.includes('始皇')) {
+        return '秦汉';
+    }
+    
+    // 先秦（前221年以前）
+    if (eventName.includes('春秋') || eventName.includes('战国') || 
+        eventName.includes('周') || eventName.includes('楚') && !eventName.includes('汉')) {
+        return '先秦';
+    }
+    
+    return '未知';
+}
+
 // 获取时间段标识（用于分组）
 function getTimePeriod(year) {
     if (year < -221) return '先秦';
@@ -1311,9 +1378,19 @@ const updateEventsPage = rafThrottle(function() {
     
     // 为每个事件计算时间并分组
     const eventsWithTime = events.map(event => {
-        const timeStr = event.properties?.发生时间 || event.properties?.时间 || '';
+        const props = event.properties || {};
+        const eventName = props.名称 || props.name || '';
+        const timeStr = props.发生时间 || props.时间 || '';
         const timeInfo = parseEventTime(timeStr);
-        const period = getTimePeriod(timeInfo.year);
+        
+        // 如果时间字段为空，从事件名称推断时间段
+        let period;
+        if (timeInfo.year !== 0) {
+            period = getTimePeriod(timeInfo.year);
+        } else {
+            period = inferTimePeriodFromName(eventName);
+        }
+        
         const score = getEventImportanceScore(event);
         return {
             event: event,
