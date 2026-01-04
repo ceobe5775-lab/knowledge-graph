@@ -1333,21 +1333,37 @@ const updateEventsPage = rafThrottle(function() {
         periodGroups[item.period].push(item);
     });
     
+    console.log('updateEventsPage: 各时间段事件数量:', Object.keys(periodGroups).map(p => `${p}:${periodGroups[p].length}`).join(', '));
+    
     // 从每个时间段选择事件：优先选择高分事件，但确保每个时间段都有代表
     const selectedEvents = [];
-    const maxEventsPerPeriod = Math.ceil(100 / Object.keys(periodGroups).length); // 平均分配，最多100个事件
+    const periodOrder = ['先秦', '秦汉', '汉', '魏晋南北朝', '隋唐', '宋元', '明', '清', '民国', '现代'];
+    const validPeriods = periodOrder.filter(p => periodGroups[p] && periodGroups[p].length > 0);
     
-    Object.keys(periodGroups).sort((a, b) => {
-        // 按时间顺序排序时间段
-        const periods = ['先秦', '秦汉', '汉', '魏晋南北朝', '隋唐', '宋元', '明', '清', '民国', '现代'];
-        return periods.indexOf(a) - periods.indexOf(b);
-    }).forEach(period => {
+    // 计算每个时间段应该选择的事件数量
+    // 目标：总共显示约60-80个事件，平均分配到各个时间段
+    const targetTotalEvents = 70;
+    const baseEventsPerPeriod = Math.floor(targetTotalEvents / Math.max(1, validPeriods.length));
+    const minEventsPerPeriod = 5; // 每个时间段至少选择5个事件
+    const maxEventsPerPeriod = 15; // 每个时间段最多选择15个事件
+    
+    validPeriods.forEach(period => {
         const periodEvents = periodGroups[period];
         // 按重要性得分降序排序
         periodEvents.sort((a, b) => b.score - a.score);
-        // 从每个时间段选择事件（优先高分，但确保至少选一些）
-        const selectCount = Math.min(maxEventsPerPeriod, Math.max(3, Math.ceil(periodEvents.length * 0.3)));
-        selectedEvents.push(...periodEvents.slice(0, selectCount));
+        
+        // 计算选择数量：基础数量，但不少于最小值，不超过最大值和该时间段的事件总数
+        let selectCount = Math.max(minEventsPerPeriod, baseEventsPerPeriod);
+        selectCount = Math.min(selectCount, maxEventsPerPeriod, periodEvents.length);
+        
+        // 如果该时间段事件较多，可以选择更多（最多15个）
+        if (periodEvents.length > 20) {
+            selectCount = Math.min(15, periodEvents.length);
+        }
+        
+        const selected = periodEvents.slice(0, selectCount);
+        console.log(`updateEventsPage: 时间段 ${period} 选择 ${selected.length}/${periodEvents.length} 个事件 (最高分: ${selected[0]?.score || 0})`);
+        selectedEvents.push(...selected);
     });
     
     console.log('updateEventsPage: 从各时间段筛选出', selectedEvents.length, '个事件');
