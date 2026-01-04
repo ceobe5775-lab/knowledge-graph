@@ -2587,6 +2587,8 @@ async function renderData() {
         // 根据页面类型更新内容
         if (path.includes('overview.html')) {
             updateOverviewPage();
+        } else if (path.includes('all-events.html')) {
+            updateAllEventsPage();
         } else if (path.includes('events.html')) {
             updateEventsPage();
         } else if (path.includes('persons.html')) {
